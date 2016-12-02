@@ -6,12 +6,8 @@ import android.util.Log;
 import com.androidplot.Plot;
 
 import java.lang.ref.WeakReference;
-import java.util.Iterator;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Random;
 
 /**
  * Utility class for invoking Plot.redraw() on a background thread
@@ -34,10 +30,13 @@ public class ThreadRetrofit implements Runnable {
 
     private Thread thread;
     private MyApp myApp;
-
+    private Context context;
+    private Random random;
 
 
     public ThreadRetrofit(Context context, float maxRefreshRate, boolean startImmediately) {
+        this.context = context;
+        random = new Random();
         this.myApp = (MyApp) context.getApplicationContext();
 
         setMaxRefreshRate(maxRefreshRate);
@@ -72,30 +71,32 @@ public class ThreadRetrofit implements Runnable {
         try {
             while(keepAlive) {
                 if(keepRunning) {
-                    //要執行的程式碼，請放在這
-                    Call<List<demoData>> readLastestOneClone = myApp.readLatestOne.clone();
-                    readLastestOneClone.enqueue(new Callback<List<demoData>>() {
-                        @Override
-                        public void onResponse(Call<List<demoData>> call, Response<List<demoData>> response) {
-                            myApp.resultDemoData=response.body();
-                        if(myApp.resultDemoData==null){
-                            Log.d(TAG,"myApp.resultDemoDate ==null");
-                            return;
-                        }
-                            Iterator it = myApp.resultDemoData.iterator();
-                            while (it.hasNext()){
-                                Log.d(TAG,((demoData)it.next()).SENSOR);
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<demoData>> call, Throwable t) {
-                            t.printStackTrace();
-
-                        }
-                    });
-
+//  //                  要執行的程式碼，請放在這
+//                    Call<List<demoData>> readLastestOneClone = myApp.readLatestOne.clone();
+//                    readLastestOneClone.enqueue(new Callback<List<demoData>>() {
+//                        @Override
+//                        public void onResponse(Call<List<demoData>> call, Response<List<demoData>> response) {
+//                            myApp.resultDemoData=response.body();
+//                        if(myApp.resultDemoData==null){
+//                            Log.d(TAG,"myApp.resultDemoDate ==null");
+//                            return;
+//                        }
+//                            Iterator it = myApp.resultDemoData.iterator();
+//                            while (it.hasNext()){
+//                                Log.d(TAG,((demoData)it.next()).SENSOR);
+//                            }
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<List<demoData>> call, Throwable t) {
+//                            t.printStackTrace();
+//
+//                        }
+//                    });
+                    ((ChartActivity)context).setEmulatedData(   random.nextInt(50)+280,
+                            random.nextInt(60)-30,
+                            random.nextInt(30)-150);
 
 
 

@@ -44,7 +44,7 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
     private float[] mGravity = null;
     private float[] mGeomagnetic = null;
 
-    private  int HISTORY_SIZE = 1000;
+    private  int HISTORY_SIZE = 100;  //格數
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
 
         //設為陣列,可以一次傳兩個資料
         redrawer = new Redrawer(Arrays.asList(new Plot[]{aprLevelsPlot, aprHistoryPlot}), 3, false);
-        threadRetrofit = new ThreadRetrofit(this, 1, false);
+        threadRetrofit = new ThreadRetrofit(this, 10, false);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
     }
 
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+    public synchronized void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = sensorEvent.values;
 
@@ -169,18 +169,29 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
             rLvSeries.setModel( Arrays.asList( new Number[]{mGravity[1]}),
                                 SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
 
-            if(aHtSeries.size() > HISTORY_SIZE - 1){
-                aHtSeries.removeFirst();
-                pHtSeries.removeFirst();
-                rHtSeries.removeFirst();
-            }
-
-            aHtSeries.addLast(null, mGeomagnetic[0]);
-            pHtSeries.addLast(null, mGravity[0]);
-            rHtSeries.addLast(null, mGravity[1]);
+//            if(aHtSeries.size() > HISTORY_SIZE - 1){
+//                aHtSeries.removeFirst();
+//                pHtSeries.removeFirst();
+//                rHtSeries.removeFirst();
+//            }
+//
+//            aHtSeries.addLast(null, mGeomagnetic[0]);
+//            pHtSeries.addLast(null, mGravity[0]);
+//            rHtSeries.addLast(null, mGravity[1]);
+            System.out.println(mGeomagnetic[0]);
         }
     }
+        public void setEmulatedData(int a, int p, int r){
+        if(aHtSeries.size() > HISTORY_SIZE - 1){
+            aHtSeries.removeFirst();
+            pHtSeries.removeFirst();
+            rHtSeries.removeFirst();
+        }
 
+        aHtSeries.addLast(null, a);
+        pHtSeries.addLast(null, p);
+        rHtSeries.addLast(null, r);
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
