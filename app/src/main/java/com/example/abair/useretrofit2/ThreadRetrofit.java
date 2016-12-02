@@ -6,7 +6,12 @@ import android.util.Log;
 import com.androidplot.Plot;
 
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Utility class for invoking Plot.redraw() on a background thread
@@ -16,7 +21,7 @@ public class ThreadRetrofit implements Runnable {
 
     private static final int ONE_SECOND_MS = 1000;
 
-    private static final String TAG = com.androidplot.util.Redrawer.class.getName();
+    private static final String TAG = "ThreadRetrofit2";
 
     private List<WeakReference<Plot>> plots;
     private long sleepTime;
@@ -33,6 +38,8 @@ public class ThreadRetrofit implements Runnable {
 
 
     public ThreadRetrofit(Context context, float maxRefreshRate, boolean startImmediately) {
+        this.myApp = (MyApp) context.getApplicationContext();
+
         setMaxRefreshRate(maxRefreshRate);
         thread = new Thread(this);
         thread.start();
@@ -66,6 +73,33 @@ public class ThreadRetrofit implements Runnable {
             while(keepAlive) {
                 if(keepRunning) {
                     //要執行的程式碼，請放在這
+                    Call<List<demoData>> readLastestOneClone = myApp.readLatestOne.clone();
+                    readLastestOneClone.enqueue(new Callback<List<demoData>>() {
+                        @Override
+                        public void onResponse(Call<List<demoData>> call, Response<List<demoData>> response) {
+                            myApp.resultDemoData=response.body();
+                        if(myApp.resultDemoData==null){
+                            Log.d(TAG,"myApp.resultDemoDate ==null");
+                            return;
+                        }
+                            Iterator it = myApp.resultDemoData.iterator();
+                            while (it.hasNext()){
+                                Log.d(TAG,((demoData)it.next()).SENSOR);
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<demoData>> call, Throwable t) {
+                            t.printStackTrace();
+
+                        }
+                    });
+
+
+
+
+
                     synchronized (this) {
                         wait(sleepTime);
                     }

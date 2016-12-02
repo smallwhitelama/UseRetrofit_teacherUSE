@@ -36,6 +36,8 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
     private SimpleXYSeries rHtSeries;
 
     private Redrawer redrawer;
+    private ThreadRetrofit threadRetrofit;
+
     private SensorManager sensorManager = null;
     private Sensor accSensor = null;
     private Sensor magSensor = null;
@@ -112,24 +114,41 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
         aprHistoryPlot.addSeries(aHtSeries, new LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null));//LineAndPointFormatter
         aprHistoryPlot.addSeries(pHtSeries, new LineAndPointFormatter(Color.rgb(0, 200, 0), null, null, null));
         aprHistoryPlot.addSeries(rHtSeries, new LineAndPointFormatter(Color.rgb(200, 0, 0), null, null, null));
+
+        aprHistoryPlot.setDomainStepValue(HISTORY_SIZE/100);
+        aprHistoryPlot.setLinesPerRangeLabel(3);
+        aprHistoryPlot.setDomainLabel("取樣");
+        aprHistoryPlot.getDomainTitle().pack();
+        aprHistoryPlot.setRangeLabel("角度");
+        aprHistoryPlot.getRangeTitle().pack();
+        aprHistoryPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
+        aprHistoryPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new DecimalFormat("#"));
+
+
+
+
         //設為陣列,可以一次傳兩個資料
         redrawer = new Redrawer(Arrays.asList(new Plot[]{aprLevelsPlot, aprHistoryPlot}), 3, false);
+        threadRetrofit = new ThreadRetrofit(this, 1, false);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         redrawer.start();
+        threadRetrofit.start();
     }
 
     @Override
     protected void onPause() {
+        threadRetrofit.start();
         redrawer.pause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        threadRetrofit.start();
         redrawer.finish();
         super.onDestroy();
     }
