@@ -55,10 +55,10 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
         pLvSeries = new SimpleXYSeries("P");
         rLvSeries = new SimpleXYSeries("R");
 
-        aprLevelsPlot.addSeries(aLvSeries, new BarFormatter(Color.rgb(0, 0, 200), Color.rgb(0, 0, 0)));
+        aprLevelsPlot.addSeries(aLvSeries, new BarFormatter(Color.rgb(0, 0, 200), Color.rgb(0, 0, 0)));//BarFormatter為柱狀圖
         aprLevelsPlot.addSeries(pLvSeries, new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 0, 0)));
         aprLevelsPlot.addSeries(rLvSeries, new BarFormatter(Color.rgb(200, 0, 0), Color.rgb(0, 0, 0)));
-
+        //美化程式
         aprLevelsPlot.setDomainStepValue(3);
         aprLevelsPlot.setLinesPerRangeLabel(3);
 
@@ -68,7 +68,7 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
         aprLevelsPlot.getRangeTitle().pack();
         aprLevelsPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
         aprLevelsPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).getPaint().setColor(Color.TRANSPARENT);
-
+        //設定範圍
         aprLevelsPlot.setRangeBoundaries(-180, 359, BoundaryMode.FIXED);
         aprLevelsPlot.setDomainBoundaries(-1, 1, BoundaryMode.FIXED);
 
@@ -108,11 +108,11 @@ public class ChartActivity extends AppCompatActivity implements SensorEventListe
 
         aprHistoryPlot.setRangeBoundaries(-180, 359, BoundaryMode.FIXED);
         aprHistoryPlot.setDomainBoundaries(0, HISTORY_SIZE, BoundaryMode.FIXED);
-
-        aprHistoryPlot.addSeries(aHtSeries, new LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null));
+        //歷史圖形(線條)
+        aprHistoryPlot.addSeries(aHtSeries, new LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null));//LineAndPointFormatter
         aprHistoryPlot.addSeries(pHtSeries, new LineAndPointFormatter(Color.rgb(0, 200, 0), null, null, null));
         aprHistoryPlot.addSeries(rHtSeries, new LineAndPointFormatter(Color.rgb(200, 0, 0), null, null, null));
-
+        //設為陣列,可以一次傳兩個資料
         redrawer = new Redrawer(Arrays.asList(new Plot[]{aprLevelsPlot, aprHistoryPlot}), 3, false);
     }
 

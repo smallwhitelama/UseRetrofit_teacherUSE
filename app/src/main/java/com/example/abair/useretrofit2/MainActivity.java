@@ -2,12 +2,10 @@ package com.example.abair.useretrofit2;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements ItemAdapter.custo
 
         Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("https://api.github.com/")
-                .baseUrl("http://192.168.137.53:8081/PHP_Project_forXAMPP/11-14_projectForAll/")
+                .baseUrl("http://192.168.58.22:8081/11-0/11-14_project/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
